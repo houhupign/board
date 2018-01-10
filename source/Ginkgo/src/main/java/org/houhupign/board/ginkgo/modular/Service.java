@@ -1,5 +1,5 @@
 package org.houhupign.board.ginkgo.modular;
 
-public class FunctionIn {
+public interface Service {
 
 }

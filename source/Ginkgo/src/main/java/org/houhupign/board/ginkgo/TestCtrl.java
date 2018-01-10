@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class TestCtrl {
 	
-	@RequestMapping(name="test")
+	@RequestMapping(value="test")
 	public String test(HttpServletRequest request,HttpServletResponse response){
 		request.setAttribute("test", "test");
 		return "test";
