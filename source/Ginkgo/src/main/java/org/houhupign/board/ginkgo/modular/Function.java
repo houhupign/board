@@ -9,6 +9,15 @@ public class Function {
 	private FunctionInput input;
 	private FunctionOutput output;
 	
+	public Function(String functionNumber, String functionName) {
+		this.functionNumber = functionNumber;
+		this.functionName = functionName;
+	}
+
+	public Function() {
+		
+	}
+	
 	public Long getModularId() {
 		return modularId;
 	}
@@ -56,5 +65,4 @@ public class Function {
 	public void setFunctionNumber(String functionNumber) {
 		this.functionNumber = functionNumber;
 	}
-	
 }

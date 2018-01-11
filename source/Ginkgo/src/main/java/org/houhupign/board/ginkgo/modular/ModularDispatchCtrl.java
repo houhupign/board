@@ -15,7 +15,7 @@ public class ModularDispatchCtrl {
 	
 	@RequestMapping("vist/{modularName}")
 	public String vistModular(@PathVariable("modularName") String modularName,HttpServletRequest request,HttpServletResponse response){
-		return modularName;
+		return "layout";
 	}
 	
 	@RequestMapping("listAllModular")

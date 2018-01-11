@@ -5,11 +5,11 @@ import java.util.List;
 public class FunctionInput {
 	private Long id;
 	private Long functionId;
-	private List<FunctionInputItem<?>> inputItems;
-	public List<FunctionInputItem<?>> getInputItems() {
+	private List<FunctionInputItem> inputItems;
+	public List<FunctionInputItem> getInputItems() {
 		return inputItems;
 	}
-	public void setInputItems(List<FunctionInputItem<?>> inputItems) {
+	public void setInputItems(List<FunctionInputItem> inputItems) {
 		this.inputItems = inputItems;
 	}
 	public Long getId() {

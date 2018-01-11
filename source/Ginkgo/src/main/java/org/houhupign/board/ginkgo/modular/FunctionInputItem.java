@@ -1,11 +1,11 @@
 package org.houhupign.board.ginkgo.modular;
 
-public class FunctionInputItem<T> {
+public class FunctionInputItem {
 
 	private Long id;
 	private Long functionInputId;
 	private String name;
-	private T defaultValue;
+	private Value<?> initialValue;
 
 	public Long getFunctionInputId() {
 		return functionInputId;
@@ -31,12 +31,12 @@ public class FunctionInputItem<T> {
 		this.name = name;
 	}
 
-	public T getDefaultValue() {
-		return defaultValue;
+	public Value<?> getInitialValue() {
+		return initialValue;
 	}
 
-	public void setDefaultValue(T defaultValue) {
-		this.defaultValue = defaultValue;
+	public void setInitialValue(Value<?> initialValue) {
+		this.initialValue = initialValue;
 	}
-
+	
 }

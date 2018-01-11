@@ -11,7 +11,7 @@ public class TestCtrl {
 	
 	@RequestMapping(value="test")
 	public String test(HttpServletRequest request,HttpServletResponse response){
-		request.setAttribute("test", "test");
+		request.setAttribute("test", "test123123123");
 		return "test";
 	}
 }

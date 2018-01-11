@@ -7,7 +7,7 @@ public class FunctionOutput {
 	private Long functionId;
 	private Integer resultCode;
 	private String resultDesc;
-	private List<FunctionOutputItem<?>> outItems;
+	private List<FunctionOutputItem> outItems;
 
 	public Integer getResultCode() {
 		return resultCode;
@@ -42,11 +42,11 @@ public class FunctionOutput {
 		this.functionId = functionId;
 	}
 
-	public List<FunctionOutputItem<?>> getOutItems() {
+	public List<FunctionOutputItem> getOutItems() {
 		return outItems;
 	}
 
-	public void setOutItems(List<FunctionOutputItem<?>> outItems) {
+	public void setOutItems(List<FunctionOutputItem> outItems) {
 		this.outItems = outItems;
 	}
 }

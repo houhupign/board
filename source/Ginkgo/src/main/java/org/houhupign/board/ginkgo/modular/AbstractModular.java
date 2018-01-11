@@ -1,8 +1,8 @@
 package org.houhupign.board.ginkgo.modular;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +11,21 @@ public abstract class AbstractModular implements Modular{
 	
 	@Autowired
 	private ModularDao modularDao;
+	
+	@Autowired
+	private FunctionDao functionDao;
+	
+	@Autowired
+	private FunctionInputDao functionInputDao;
+	
+	@Autowired
+	private FunctionOutputDao functionOutputDao;
+	
+	@Autowired
+	private FunctionInputItemDao functionInputItemDao;
+	
+	@Autowired
+	private FunctionOutputItemDao functionOutputItemDao;
 	
 	//ID
 	private Long id;
@@ -80,13 +95,51 @@ public abstract class AbstractModular implements Modular{
 
 	@Override
 	@Transactional
-	@PostConstruct
 	public void register() {
+		
 		System.out.println("============================");
+		
 		init();
 		
         Long modularId = modularDao.createModular(this);
+        
 		addFunctiones();
+		
+		for(Function f : this.functions.keySet()){
+			
+			f.setModularId(modularId);
+			Long functionId = functionDao.createFunction(f);
+			
+			FunctionInput input = f.getInput();
+			input.setFunctionId(functionId);
+			functionInputDao.createFunctionInput(input);
+			
+			List<FunctionInputItem> items = input.getInputItems();
+			if(null!=items){
+				for(FunctionInputItem item : items){
+					if(null == item){
+						continue;
+					}
+					item.setFunctionInputId(functionId);
+					functionInputItemDao.createFunctionInputItem(item);
+				}
+			}
+			
+			FunctionOutput output = f.getOutput();
+			output.setFunctionId(functionId);
+			functionOutputDao.createFunctionOutput(output);
+			
+			List<FunctionOutputItem> outItems = output.getOutItems();
+			if(null!=outItems){
+				for(FunctionOutputItem outItem : outItems){
+					if(null == outItem){
+						continue;
+					}
+					outItem.setFunctionOutputId(functionId);
+					functionOutputItemDao.createFunctionOutputItem(outItem);
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -113,5 +166,33 @@ public abstract class AbstractModular implements Modular{
 	@Override
 	public abstract void addFunctiones();
 	
+	protected Function createFunction(String functionNumber, String functionName,String[] functionInputItemNames,String[] functionOutputItemNames){
+		
+		Function addArea = new Function(functionNumber, functionName);
+		
+		FunctionInput addAreaInput = new FunctionInput();
+		addArea.setInput(addAreaInput);
+		
+		List<FunctionInputItem>  items = new ArrayList<>();
+		for(String inputItemName :functionInputItemNames){
+			FunctionInputItem inputItem = new FunctionInputItem();
+			inputItem.setName(inputItemName);
+			items.add(inputItem);
+		}
+		addAreaInput.setInputItems(items);
+		
+		FunctionOutput addAreaOutput = new FunctionOutput();
+		addArea.setOutput(addAreaOutput);
+		
+		List<FunctionOutputItem> outputItems = new ArrayList<>();
+		for(String outputItemName : functionOutputItemNames){
+			FunctionOutputItem outItem = new FunctionOutputItem();
+			outItem.setName(outputItemName);
+			outputItems.add(outItem);
+		}
+		addAreaOutput.setOutItems(outputItems);
+		
+		return addArea;
+	}
 }
 

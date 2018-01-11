@@ -1,11 +1,11 @@
 package org.houhupign.board.ginkgo.modular;
 
-public class FunctionOutputItem<T> {
+public class FunctionOutputItem {
 
 	private Long id;
 	private Long functionOutputId;
 	private String name;
-	private T value;
+	private Value<?> value;
 
 	public Long getId() {
 		return id;
@@ -31,11 +31,11 @@ public class FunctionOutputItem<T> {
 		this.name = name;
 	}
 
-	public T getValue() {
+	public Value<?> getValue() {
 		return value;
 	}
 
-	public void setValue(T value) {
+	public void setValue(Value<?> value) {
 		this.value = value;
 	}
 
