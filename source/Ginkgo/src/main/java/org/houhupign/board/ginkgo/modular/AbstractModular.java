@@ -1,20 +1,16 @@
 package org.houhupign.board.ginkgo.modular;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementSetter;
 
 public abstract class AbstractModular implements Modular{
 	
 	@Autowired
-    private JdbcTemplate jdbcTemplate; 
+	private ModularDao modularDao;
 	
 	//ID
 	private Long id;
@@ -89,22 +85,8 @@ public abstract class AbstractModular implements Modular{
 		System.out.println("============================");
 		init();
 		
-		//保存到数据库
-		String sql = "insert into `modular` (`id`, `modular_number`, `modular_ame`, `icon`) values (?, ?, ?, ?)";
-		final AbstractModular m = this;
-		this.jdbcTemplate.update(sql,new PreparedStatementSetter(){
-			@Override
-			public void setValues(PreparedStatement ps) throws SQLException {
-				ps.setLong(1, m.getId());
-				ps.setString(2, m.getModularNumber());
-				ps.setString(3,m.getModularName());
-				ps.setString(4,m.getIcon());
-			}
-		});
-		
+        Long modularId = modularDao.createModular(this);
 		addFunctiones();
-		
-		
 	}
 	
 	@Override
@@ -132,3 +114,4 @@ public abstract class AbstractModular implements Modular{
 	public abstract void addFunctiones();
 	
 }
+
