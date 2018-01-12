@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
@@ -41,5 +42,22 @@ public class CommonDataBaseOperationTools {
 		jdbcTemplate.update(psc,keyHolder);
 		
 		return keyHolder.getKey().longValue();
+	}
+	
+	/**
+	 * 
+	 * @param sql语句字符串
+	 * @param PreparedStatementSetter
+	 * @return 查询结果
+	 */
+	public <T> T select(String sql,PreparedStatementSetter psSetter,ResultSetExtractor<T> rse){
+		
+		PreparedStatementCreator psc = con -> {
+			PreparedStatement ps = con.prepareStatement(sql);
+			psSetter.setValues(ps);
+			return ps;
+		};
+		
+		return jdbcTemplate.query(psc,rse);
 	}
 }

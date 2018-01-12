@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.transaction.Transactional;
-
+import org.houhupign.board.ginkgo.modular.view.ModularView;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractModular implements Modular{
@@ -39,11 +39,118 @@ public abstract class AbstractModular implements Modular{
 	//模块图标路径
 	private String icon;
 	
+	//该模块使用的模板名称
+	private String templateName;
+	
 	//模块功能集合
 	private Map<Function,Service> functions;
 	
 	//模块GUI类型
 	private String guiType;
+
+	@Override
+	@Transactional
+	public void register() {
+		
+		System.out.println("============================");
+		
+		init();
+		
+        Long modularId = modularDao.createModular(this);
+        this.id = modularId;
+        
+		addFunctiones();
+		
+		for(Function f : this.functions.keySet()){
+			
+			f.setModularId(modularId);
+			Long functionId = functionDao.createFunction(f);
+			
+			FunctionInput input = f.getInput();
+			input.setFunctionId(functionId);
+			functionInputDao.createFunctionInput(input);
+			
+			List<FunctionInputItem> items = input.getInputItems();
+			if(null!=items){
+				for(FunctionInputItem item : items){
+					if(null == item){
+						continue;
+					}
+					item.setFunctionInputId(functionId);
+					functionInputItemDao.createFunctionInputItem(item);
+				}
+			}
+			
+			FunctionOutput output = f.getOutput();
+			output.setFunctionId(functionId);
+			functionOutputDao.createFunctionOutput(output);
+			
+			List<FunctionOutputItem> outItems = output.getOutItems();
+			if(null!=outItems){
+				for(FunctionOutputItem outItem : outItems){
+					if(null == outItem){
+						continue;
+					}
+					outItem.setFunctionOutputId(functionId);
+					functionOutputItemDao.createFunctionOutputItem(outItem);
+				}
+			}
+		}
+	}
+	
+	@Override
+	public ModularView display() {
+		ModularView view = new ModularView();
+		view.setTemplatName(this.modularDao.queryModularTemplate(this.id));
+		return view;
+	}
+	
+	@Override
+	public FunctionOutput execute(String modeular, FunctionInput inputes) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void destory() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public abstract void init();
+	
+	@Override
+	public abstract void addFunctiones();
+	
+	protected Function createFunction(String functionNumber, String functionName,String[] functionInputItemNames,String[] functionOutputItemNames){
+		
+		Function addArea = new Function(functionNumber, functionName);
+		
+		FunctionInput addAreaInput = new FunctionInput();
+		addArea.setInput(addAreaInput);
+		
+		List<FunctionInputItem>  items = new ArrayList<>();
+		for(String inputItemName :functionInputItemNames){
+			FunctionInputItem inputItem = new FunctionInputItem();
+			inputItem.setName(inputItemName);
+			items.add(inputItem);
+		}
+		addAreaInput.setInputItems(items);
+		
+		FunctionOutput addAreaOutput = new FunctionOutput();
+		addArea.setOutput(addAreaOutput);
+		
+		List<FunctionOutputItem> outputItems = new ArrayList<>();
+		for(String outputItemName : functionOutputItemNames){
+			FunctionOutputItem outItem = new FunctionOutputItem();
+			outItem.setName(outputItemName);
+			outputItems.add(outItem);
+		}
+		addAreaOutput.setOutItems(outputItems);
+		
+		return addArea;
+	}
 	
 	public Long getId() {
 		return id;
@@ -93,106 +200,13 @@ public abstract class AbstractModular implements Modular{
 		this.guiType = guiType;
 	}
 
-	@Override
-	@Transactional
-	public void register() {
-		
-		System.out.println("============================");
-		
-		init();
-		
-        Long modularId = modularDao.createModular(this);
-        
-		addFunctiones();
-		
-		for(Function f : this.functions.keySet()){
-			
-			f.setModularId(modularId);
-			Long functionId = functionDao.createFunction(f);
-			
-			FunctionInput input = f.getInput();
-			input.setFunctionId(functionId);
-			functionInputDao.createFunctionInput(input);
-			
-			List<FunctionInputItem> items = input.getInputItems();
-			if(null!=items){
-				for(FunctionInputItem item : items){
-					if(null == item){
-						continue;
-					}
-					item.setFunctionInputId(functionId);
-					functionInputItemDao.createFunctionInputItem(item);
-				}
-			}
-			
-			FunctionOutput output = f.getOutput();
-			output.setFunctionId(functionId);
-			functionOutputDao.createFunctionOutput(output);
-			
-			List<FunctionOutputItem> outItems = output.getOutItems();
-			if(null!=outItems){
-				for(FunctionOutputItem outItem : outItems){
-					if(null == outItem){
-						continue;
-					}
-					outItem.setFunctionOutputId(functionId);
-					functionOutputItemDao.createFunctionOutputItem(outItem);
-				}
-			}
-		}
-	}
-	
-	@Override
-	public String display() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	@Override
-	public FunctionOutput execute(String modeular, FunctionInput inputes) {
-		// TODO Auto-generated method stub
-		return null;
+	public String getTemplateName() {
+		return templateName;
 	}
 
-	@Override
-	public void destory() {
-		// TODO Auto-generated method stub
-		
+	public void setTemplateName(String templateName) {
+		this.templateName = templateName;
 	}
 	
-	@Override
-	public abstract void init();
-	
-	@Override
-	public abstract void addFunctiones();
-	
-	protected Function createFunction(String functionNumber, String functionName,String[] functionInputItemNames,String[] functionOutputItemNames){
-		
-		Function addArea = new Function(functionNumber, functionName);
-		
-		FunctionInput addAreaInput = new FunctionInput();
-		addArea.setInput(addAreaInput);
-		
-		List<FunctionInputItem>  items = new ArrayList<>();
-		for(String inputItemName :functionInputItemNames){
-			FunctionInputItem inputItem = new FunctionInputItem();
-			inputItem.setName(inputItemName);
-			items.add(inputItem);
-		}
-		addAreaInput.setInputItems(items);
-		
-		FunctionOutput addAreaOutput = new FunctionOutput();
-		addArea.setOutput(addAreaOutput);
-		
-		List<FunctionOutputItem> outputItems = new ArrayList<>();
-		for(String outputItemName : functionOutputItemNames){
-			FunctionOutputItem outItem = new FunctionOutputItem();
-			outItem.setName(outputItemName);
-			outputItems.add(outItem);
-		}
-		addAreaOutput.setOutItems(outputItems);
-		
-		return addArea;
-	}
 }
 

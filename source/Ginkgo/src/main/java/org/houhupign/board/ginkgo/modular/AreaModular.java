@@ -10,7 +10,8 @@ public class AreaModular extends AbstractModular {
 	@Override
 	public void init() {
 		this.setModularName("area");
-		this.setModularNumber("md01");
+		this.setModularNumber("md01" + System.currentTimeMillis());
+		this.setTemplateName("area");
 	}
 
 	@Override
@@ -18,7 +19,7 @@ public class AreaModular extends AbstractModular {
 		
 		Map<Function, Service> functions = new HashMap<>();
 		
-		Function addArea = super.createFunction("mdlr001", "addArea", new String[]{"名称","级别"}, new String[]{"名称","级别"});
+		Function addArea = super.createFunction("mdlr001" + System.currentTimeMillis(), "addArea", new String[]{"名称","级别"}, new String[]{"名称","级别"});
 		
 		functions.put(addArea,null);
 		
